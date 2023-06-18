@@ -1,16 +1,20 @@
 package id.co.indivara.jdt12.mpcarrent.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Entity;
 
-@Entity
 @Data
-@NoArgsConstructor
+@Entity
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
+@Getter
+@Setter
 public class Driver {
+    private String driverId;
+    private String driverName;
+    private String contact;
+    private String address;
+    private Double driverPrice;
 }

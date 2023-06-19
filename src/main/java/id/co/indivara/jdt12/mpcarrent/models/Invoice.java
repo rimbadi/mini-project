@@ -1,17 +1,20 @@
-package id.co.indivara.jdt12.mpcarrent.entity;
+package id.co.indivara.jdt12.mpcarrent.models;
 
 import lombok.*;
 
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 @Entity
 @Data
+@Table(name = "invoices")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Getter @Setter
 public class Invoice {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String invoiceId;
     private String rentId;

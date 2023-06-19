@@ -1,6 +1,6 @@
 package id.co.indivara.jdt12.mpcarrent.repository;
 
-import id.co.indivara.jdt12.mpcarrent.entity.Customer;
+import id.co.indivara.jdt12.mpcarrent.models.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

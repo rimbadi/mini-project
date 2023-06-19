@@ -8,7 +8,6 @@ public class MpCarRentApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(MpCarRentApplication.class, args);
-		System.out.println("hello");
 	}
 
 }

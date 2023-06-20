@@ -21,6 +21,6 @@ public class Rent {
     private String vehicleId;
     private String driverId;
     private String checkIn;
-    private String checkOuut;
+    private String checkOut;
     private Boolean status;
 }

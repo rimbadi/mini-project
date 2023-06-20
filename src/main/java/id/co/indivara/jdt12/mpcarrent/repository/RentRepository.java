@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface RentRepository extends JpaRepository<Rent,Long> {
-    List<Rent> fetchByRentId(String rentId);
+List<Rent> findByRentId(String rentId);
 }

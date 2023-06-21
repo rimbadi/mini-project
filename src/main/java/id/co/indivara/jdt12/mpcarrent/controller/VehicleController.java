@@ -2,15 +2,16 @@ package id.co.indivara.jdt12.mpcarrent.controller;
 
 import id.co.indivara.jdt12.mpcarrent.models.Vehicle;
 import id.co.indivara.jdt12.mpcarrent.services.VehicleService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class VehicleController {
-    @Autowired
-    private VehicleService vehicleService;
+
+    private final VehicleService vehicleService;
 
     @PostMapping("/vehicle")
     public Vehicle saveVehicle(@RequestBody Vehicle vehicle){

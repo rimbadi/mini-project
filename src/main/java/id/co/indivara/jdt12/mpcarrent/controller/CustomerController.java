@@ -2,23 +2,24 @@ package id.co.indivara.jdt12.mpcarrent.controller;
 
 import id.co.indivara.jdt12.mpcarrent.models.Customer;
 import id.co.indivara.jdt12.mpcarrent.services.CustomerService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class CustomerController {
-    @Autowired
-    private CustomerService customerService;
+
+    private final CustomerService customerService;
 
     @PostMapping("/customer")
     public Customer saveCustomer(@RequestBody Customer customer){
         return customerService.saveCustomer(customer);
     }
-    @PutMapping("/customer/{id}")
-    public Customer updateCustomer(@RequestBody Customer customer, @PathVariable Long id) throws Exception{
-        return customerService.updateCustomer(customer,id);
+    @PutMapping("/customer/{customerId}")
+    public Customer updateCustomer(@RequestBody Customer customer, @PathVariable Long customerId) throws Exception{
+        return customerService.updateCustomer(customer,customerId);
     }
     @GetMapping("/customer")
     public List<Customer> fetchCustomerList(){
@@ -29,5 +30,6 @@ public class CustomerController {
          customerService.deleteByIdCustomer(customerId);
          return "Delete sukses";
     }
+    //TODO: FindbyId
 
 }

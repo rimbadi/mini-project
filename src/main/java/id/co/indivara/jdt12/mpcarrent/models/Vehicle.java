@@ -1,22 +1,33 @@
 package id.co.indivara.jdt12.mpcarrent.models;
 
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
-@Data
-@Table(name = "vehicles")
-@Builder
+@Table(name = "mst_vehicles")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter @Setter
-public class Vehicle {
+@ToString
+public class Vehicle extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    private String vehicleId;
+    @Column(name = "vehicle_id", updatable = false, nullable = false)
+    private Long vehicleId;
+    @Column(name = "vehicle_name",length = 25,nullable = false)
     private String vehicleName;
+    @Column(name = "vehicle_brand",length = 25,nullable = false)
     private String vehicleBrand;
-    private Double vehiclePrice;
+    @Column(name = "vehicle_price",length = 20,nullable = false)
+    private BigDecimal vehiclePrice;
+    @Column(name = "vehicle_status")
+    private VehicleStatus vehicleStatus;
+    public enum VehicleStatus {
+        BOOKED,
+        AVAILABLE
+    }
+
 }

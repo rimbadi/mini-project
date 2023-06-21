@@ -1,24 +1,37 @@
 package id.co.indivara.jdt12.mpcarrent.models;
 
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
-@Data
+
 @Entity
-@Table(name = "drivers")
+@Table(name = "mst_drivers")
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Getter
 @Setter
-public class Driver {
+@ToString
+public class Driver extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    private String driverId;
+    @Column(name = "driver_id", updatable = false, nullable = false)
+    private Long driverId;
+
+    @Column(name = "driver_name",length = 25,nullable = false)
     private String driverName;
-    private String contact;
+    @Column(name = "phone_number",length = 13,nullable = false)
+    private String phoneNumber;
+    @Column(name ="address",nullable = false)
     private String address;
-    private Double driverPrice;
+    @Column(name = "driver_price",length = 10, nullable = false)
+    private BigDecimal driverPrice;
+    @Column(name = "driver_status")
+    private DriverStatus driverStatus;
+    public enum DriverStatus {
+        BOOKED,
+        AVAILABLE
+    }
 }

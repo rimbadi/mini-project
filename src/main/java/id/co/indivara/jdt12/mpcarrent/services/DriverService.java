@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 public class DriverService {
@@ -20,23 +22,29 @@ public class DriverService {
 
     
     @Transactional
-    public Driver updateDriver(Driver driver, Long id) throws Exception{
-        Driver driverDB=driverRepository.findById(id).orElseThrow(Exception::new);
-        driverDB.setDriverId(driver.getDriverId());
-        driverDB.setDriverName(driver.getDriverName());
-        driverDB.setDriverPrice(driver.getDriverPrice());
-        driverDB.setAddress(driver.getAddress());
-        driverDB.setPhoneNumber(driver.getPhoneNumber());
-        return driverRepository.save(driver);
+    public Driver updateDriver(Driver driver, String driverId){
+        Driver driv = driverRepository.findById(driverId).get();
+        if (Objects.nonNull(driver.getDriverName())&&!"".equalsIgnoreCase(driver.getDriverName())){
+            driv.setDriverName(driver.getDriverName());
+        }
+        if (Objects.nonNull(driver.getAddress())&&!"".equalsIgnoreCase(driver.getAddress())){
+            driv.setAddress(driver.getAddress());
+        }
+        if (Objects.nonNull(driver.getPhoneNumber())&&!"".equalsIgnoreCase(driver.getPhoneNumber())){
+            driv.setPhoneNumber(driver.getPhoneNumber());
+        }
+        if (Objects.nonNull(driver.getDriverPrice())){
+            driv.setDriverPrice(driver.getDriverPrice());
+        }
+        return driverRepository.save(driv);
     }
 
-    
     public List<Driver> fetchAllDriver() {
         return driverRepository.findAll();
     }
 
     
-    public void deleteDriverById(Long id) {
+    public void deleteDriverById(String id) {
         driverRepository.deleteById(id);
     }
 }

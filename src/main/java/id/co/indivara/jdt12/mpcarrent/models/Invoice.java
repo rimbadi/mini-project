@@ -1,7 +1,10 @@
 package id.co.indivara.jdt12.mpcarrent.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 
 import javax.persistence.*;
@@ -11,24 +14,32 @@ import java.math.BigDecimal;
 @Table(name = "trx_invoices")
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter @Setter
+@Data
 @ToString
 public class Invoice extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "mst_invoice_id", updatable = false, nullable = false)
-    private Long invoiceId;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(name = "invoice_id", updatable = false, nullable = false)
+    private String invoiceId;
 
-    @Column(name = "rent_id",nullable = false)
-    private Long rentId;
-    @Column(name = "vehicle_cost")
-    private BigDecimal vehicleCost;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "rent_id",updatable = false,insertable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    private Rent rent;
+
+    @Column(name = "rent_id")
+    private String rentId;
     @Column(name = "driver_cost")
     private BigDecimal driverCost;
-    @Column(name = "fine_cost")
-    private BigDecimal fineCost;
+
     @Column(name = "inital_cost")
     private BigDecimal initialCost;
-    @Column(name="total_cost")
+    @Column(name ="total_cost")
     private BigDecimal totalCost;
+
 }

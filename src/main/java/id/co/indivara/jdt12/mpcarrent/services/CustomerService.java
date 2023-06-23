@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 public class CustomerService {
@@ -23,22 +25,29 @@ public class CustomerService {
     }
 
     @Transactional
-    public Customer updateCustomer(Customer customer, Long id) throws Exception{
-        Customer custDB= customerRepository.findById(id).orElseThrow(Exception::new);
-        custDB.setCustomerId(customer.getCustomerId());
-        custDB.setName(customer.getName());
-        custDB.setEmail(customer.getEmail());
-        custDB.setKtpNumber(customer.getKtpNumber());
-        custDB.setAddress(customer.getAddress());
-        custDB.setPhoneNumber(customer.getPhoneNumber());
-        return  customerRepository.save(custDB);
+    public Customer updateCustomer(Customer customer, String customerId){
+        Customer cust= customerRepository.findById(customerId).get();
+        if (Objects.nonNull(customer.getName())&&!"".equalsIgnoreCase(customer.getName())){
+            cust.setName(customer.getName());
+        }
+        if (Objects.nonNull(customer.getEmail())&&!"".equalsIgnoreCase(customer.getEmail())){
+            cust.setEmail(customer.getEmail());
+        }
+        if (Objects.nonNull(customer.getKtpNumber())&&!"".equalsIgnoreCase(customer.getKtpNumber())){
+            cust.setKtpNumber(customer.getKtpNumber());
+        }
+        if (Objects.nonNull(customer.getAddress())&&!"".equalsIgnoreCase(customer.getAddress())){
+            cust.setAddress(customer.getAddress());
+        }
+        if (Objects.nonNull(customer.getPhoneNumber())&&!"".equalsIgnoreCase(customer.getPhoneNumber())){
+            cust.setPhoneNumber(customer.getPhoneNumber());
+        }
+        return  customerRepository.save(cust);
     }
 
-    public void deleteByIdCustomer(Long id) {
+    public void deleteByIdCustomer(String id) {
         customerRepository.deleteById(id);
     }
 
-    public Customer findByCustomerId(Long customerId) {
-        return customerRepository.findByCustomerId(customerId);
-    }
+
 }

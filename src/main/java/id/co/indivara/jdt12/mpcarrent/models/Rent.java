@@ -1,8 +1,11 @@
 package id.co.indivara.jdt12.mpcarrent.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -11,31 +14,47 @@ import java.time.Instant;
 @Table(name = "trx_rents")
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 @ToString
 public class Rent extends BaseEntity{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
     @Column(name = "rent_id",updatable = false,nullable = false)
-    private Long rentId;
+    private String rentId;
+    @Column(name = "customer_id")
+    private String customerId;
+    @Column(name ="driver_id")
+    private String driverId;
+    @Column(name = "vehicle_id")
+    private String vehicleId;
 
-    @Column(name = "customer_id",nullable = false)
-    private Long customerId;
 
-    @Column(name = "vehicle_id",nullable = false)
-    private Long vehicleId;
 
-    @Column(name = "driver_id",nullable = false)
-    private Long driverId;
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "customer_id", insertable = false,updatable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    private Customer customer;
+
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "driver_id",insertable = false,updatable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    private Driver driver;
+
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "vehicle_id",insertable = false,updatable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    private Vehicle vehicle;
 
     @Column(name = "start_hour",nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Instant startHour;
-
-    @Column(name = "planned_end_hour",nullable = false)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
-    private Instant plannedEndHour;
 
     @Column(name = "actual_end_hour")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
@@ -46,7 +65,7 @@ public class Rent extends BaseEntity{
 
 
     public enum RentStatus {
-        RENTED,
+        BOOKED,
         ON_GOING,
         RETURNED
     }

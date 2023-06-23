@@ -17,17 +17,17 @@ public class DriverController {
     public Driver saveDriver(@RequestBody Driver driver){
         return driverService.saveDriver(driver);
     }
-    @PutMapping("/driver/{id}")
-    public Driver updateDriver(@RequestBody Driver driver,@PathVariable Long driverId) throws Exception{
+    @PutMapping("/driver/{driverId}")
+    public Driver updateDriver(@RequestBody Driver driver,@PathVariable String driverId){
         return driverService.updateDriver(driver,driverId);
     }
     @GetMapping("/driver")
     public List<Driver> fetchAllDriver(){
         return driverService.fetchAllDriver();
     }
-    @DeleteMapping("/driver/{id}")
-    public String deleteById(@PathVariable Long id){
-        driverService.deleteDriverById(id);
+    @DeleteMapping("/driver/{driverId}")
+    public String deleteById(@PathVariable String driverId){
+        driverService.deleteDriverById(driverId);
         return "Delete berhasil";
     }
 }

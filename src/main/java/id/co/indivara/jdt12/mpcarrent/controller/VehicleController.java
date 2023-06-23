@@ -18,15 +18,15 @@ public class VehicleController {
         return vehicleService.saveVehicle(vehicle);
     }
     @PutMapping("/vehicle/{id}")
-    public Vehicle updateVehicle(@RequestBody Vehicle vehicle, @PathVariable Long id)throws Exception{
-        return vehicleService.updateVehicle(vehicle,id);
+    public Vehicle updateVehicle(@RequestBody Vehicle vehicle, @PathVariable String vehicleId){
+        return vehicleService.updateVehicle(vehicle,vehicleId);
     }
     @GetMapping("/vehicle")
     public List<Vehicle> fetchAllVehicle(){
         return vehicleService.fetchAllVehicle();
     }
     @DeleteMapping("/vehicle/{id}")
-    public String deleteVehicle(@PathVariable Long id){
+    public String deleteVehicle(@PathVariable String id){
         vehicleService.deleteByIdVehicle(id);
         return "Delete Success";
     }

@@ -18,7 +18,7 @@ public class CustomerController {
         return customerService.saveCustomer(customer);
     }
     @PutMapping("/customer/{customerId}")
-    public Customer updateCustomer(@RequestBody Customer customer, @PathVariable Long customerId) throws Exception{
+    public Customer updateCustomer(@RequestBody Customer customer, @PathVariable String customerId){
         return customerService.updateCustomer(customer,customerId);
     }
     @GetMapping("/customer")
@@ -26,7 +26,7 @@ public class CustomerController {
         return customerService.fetchCustomerList();
     }
     @DeleteMapping("/customer/{customerId}")
-        public String deleteCustomer (@PathVariable Long customerId){
+        public String deleteCustomer (@PathVariable String customerId){
          customerService.deleteByIdCustomer(customerId);
          return "Delete sukses";
     }

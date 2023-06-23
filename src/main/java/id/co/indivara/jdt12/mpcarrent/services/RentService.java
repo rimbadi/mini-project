@@ -1,23 +1,23 @@
 package id.co.indivara.jdt12.mpcarrent.services;
 
 import id.co.indivara.jdt12.mpcarrent.error.VehicleNotFoundException;
-import id.co.indivara.jdt12.mpcarrent.models.Customer;
-import id.co.indivara.jdt12.mpcarrent.models.DTO.RentalDtoReq;
-import id.co.indivara.jdt12.mpcarrent.models.Driver;
-import id.co.indivara.jdt12.mpcarrent.models.Rent;
-import id.co.indivara.jdt12.mpcarrent.models.Vehicle;
-import id.co.indivara.jdt12.mpcarrent.repository.CustomerRepository;
-import id.co.indivara.jdt12.mpcarrent.repository.DriverRepository;
-import id.co.indivara.jdt12.mpcarrent.repository.RentRepository;
-import id.co.indivara.jdt12.mpcarrent.repository.VehicleRepository;
+import id.co.indivara.jdt12.mpcarrent.models.*;
+import id.co.indivara.jdt12.mpcarrent.models.DTO.CreateInvoiceDto;
+import id.co.indivara.jdt12.mpcarrent.models.DTO.CreateRentDto;
+import id.co.indivara.jdt12.mpcarrent.models.DTO.ResponseInvoiceDto;
+import id.co.indivara.jdt12.mpcarrent.models.DTO.UpdateRentDto;
+import id.co.indivara.jdt12.mpcarrent.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.Instant;
+
 import java.util.ArrayList;
-import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -27,81 +27,101 @@ public class RentService  {
     private final VehicleRepository vehicleRepository;
     private final DriverRepository driverRepository;
     private final CustomerRepository customerRepository;
-
+    private final InvoiceRepository invoiceRepository;
 
 
     @Transactional
-    public Rent saveRent(RentalDtoReq rentalDtoReq) {
-        //TODO: create customer
-        Customer customer = getCustomer(rentalDtoReq.getCustomerId());
-        //TODO: get vehicle
-        Vehicle vehicle = getVehicle(rentalDtoReq.getVehicleId());
-        //TODO: get driver
-        Driver driver = getEmployee(rentalDtoReq.getDriverId());
-        //TODO: create/save transaction rental
+    public Rent saveRent(CreateRentDto createRentDto) throws Exception{
         Rent rent = new Rent();
-        if (rentalDtoReq.getDriverId() != null){
-            rent.setDriverId(driver.getDriverId());
+        Customer customer = customerRepository.findById(createRentDto.getCustomerId()).orElseThrow(()-> new ServiceException("Customer not found"));
+
+        if (createRentDto.getCustomerId()!=null){
+            rent.setVehicle(getVehicle(createRentDto.getVehicleId()));
         }
-        rent.setVehicleId(vehicle.getVehicleId());
-        rent.setCustomerId(customer.getCustomerId());
-        rent.setStartHour(rentalDtoReq.getStartHour());
-        rent.setPlannedEndHour(rentalDtoReq.getPlannedEndHour());
-        rent.setActualEndHour(rentalDtoReq.getActualEndHour());
-        if (Instant.now().isBefore(rent.getActualEndHour())){
-            rent.setRentStatus(Rent.RentStatus.RENTED);
-        }else {
+        if (createRentDto.getDriverId()!=null){
+            rent.setDriver(getEmployee(createRentDto.getDriverId()));
+        }
+
+        rent.setCustomer(customer);
+        rent.setVehicleId(createRentDto.getVehicleId());
+        rent.setDriverId(createRentDto.getDriverId());
+        rent.setCustomerId(createRentDto.getCustomerId());
+
+        rent.setStartHour(createRentDto.getStartHour());
+
+        if (Instant.now().isBefore(createRentDto.getStartHour())){
+            rent.setRentStatus(Rent.RentStatus.BOOKED);
+        }else if (Instant.now().isAfter(createRentDto.getStartHour())){
             rent.setRentStatus(Rent.RentStatus.ON_GOING);
         }
-        return rentRepository.save(rent);
+        rentRepository.save(rent);
+        return rent;
     }
-
-    private Driver getEmployee(Long driverId) {
-        return driverRepository.findById(driverId).orElse(null);
+    private Driver getEmployee(String driverId)throws Exception {
+        Driver driver = driverRepository.findById(driverId).orElseThrow(()-> new Exception("driver not found"));
+        String isDriverAvailable = rentRepository.findDriverAvailbility(driverId);
+        if (isDriverAvailable != null && isDriverAvailable.equals(("no"))) {
+            throw new Exception("Driver not available");
+        }
+        return driver;
     }
-    private Customer getCustomer(Long customerID){
-        return customerRepository.findById(customerID).orElseThrow(()-> new ServiceException("Customer not found"));
-    }
-
-    private Vehicle getVehicle(long vehicleId) {
-        return vehicleRepository.findById(vehicleId).orElseThrow(()-> new VehicleNotFoundException(vehicleId));
-    }
-
-//    private Customer createCustomer(RentalDtoReq rentalDtoReq) {
-//        Customer customer = new Customer();
-//        customer.setName(rentalDtoReq.getCustomerName());
-//        customer.setEmail(rentalDtoReq.getCustomerEmail());
-//        customer.setAddress(rentalDtoReq.getCustomerAddress());
-//        customer.setPhoneNumber(rentalDtoReq.getCustomerPhoneNumber());
-//        customer.setKtpNumber(rentalDtoReq.getCustomerKtpNumber());
-//
+//    private Customer getCustomer(String id){
+//        Customer customer = customerRepository.findById(id).orElseThrow(()-> new ServiceException("Customer not found"));
 //        return customer;
 //    }
 
+            //
+    private Vehicle getVehicle(String vehicleId)throws Exception {
+        Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(()->new Exception("Vehicle not found"));
+        String isVehicleAvailble = rentRepository.findVehicleAvailbility(vehicleId);
+        if (isVehicleAvailble != null && isVehicleAvailble.equals(("no"))) {
+            throw new Exception("Vehicle not available");
+        }
+        return vehicle;
+    }
+
     @Transactional
-    public Rent updateRent(Rent rent, Long rentId) {
-        Rent rentDB = rentRepository.findById(rentId).get();
-        rentDB.setRentId(rent.getRentId());
-        rentDB.setCustomerId(rent.getCustomerId());
-        rentDB.setDriverId(rent.getDriverId());
-        rentDB.setVehicleId(rent.getVehicleId());
-        rentDB.setStartHour(rent.getStartHour());
-        rentDB.setPlannedEndHour(rent.getPlannedEndHour());
-        rentDB.setActualEndHour(rent.getActualEndHour());
-        rentDB.setRentStatus(rent.getRentStatus());
-        return rentRepository.save(rentDB);
+    public Invoice finishRent(CreateInvoiceDto createInvoiceDto, String id){
+       Rent rent = rentRepository.findById(id).get();
+       rent.setRentStatus(Rent.RentStatus.RETURNED);
+       rent.setActualEndHour(createInvoiceDto.getActualEndHour());
+       rentRepository.save(rent);
+
+        Invoice invoice = new Invoice();
+        invoice.setRent(rent);
+        invoice.setRentId(rent.getRentId());
+
+        Instant startHour= rent.getStartHour();
+        Instant actualEndHour = rent.getActualEndHour();
+
+        BigDecimal totalHours = new BigDecimal(Duration.between(startHour,actualEndHour).toHours());
+
+        BigDecimal carCost = rent.getVehicle().getVehiclePrice();
+
+            BigDecimal totalCost= totalHours.multiply(carCost);
+            invoice.setInitialCost(totalCost);
+        //jika pakai driver
+        if (rent.getDriver().getDriverId()!=null) {
+            invoice.setDriverCost(rent.getDriver().getDriverPrice());
+            BigDecimal dirverCost = rent.getDriver().getDriverPrice();
+            BigDecimal withDriver = totalHours.multiply(dirverCost);
+            invoice.setTotalCost(withDriver.add(invoice.getInitialCost()));
+        }
+        invoiceRepository.save(invoice);
+        ResponseInvoiceDto responseInvoiceDto = new ResponseInvoiceDto();
+
+        return invoice;
+
     }
 
+
     
-    public List<Rent> fetchAllRent() {
-        return rentRepository.findAll();
+    public ArrayList<Rent> fetchAllRent() {
+        return (ArrayList<Rent>) rentRepository.findAll();
     }
 
-
-
-    
-    public List<Rent> findByRentId(String rentId) {
-        ArrayList<Rent> rents= (ArrayList<Rent>) rentRepository.findByRentId(rentId);
-        return rents;
+    public Rent findByRentId(String rentId) {
+        Rent rent= rentRepository.findById(rentId).get();
+        return rent;
     }
 }

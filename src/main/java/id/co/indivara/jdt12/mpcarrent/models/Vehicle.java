@@ -10,24 +10,21 @@ import java.math.BigDecimal;
 @Table(name = "mst_vehicles")
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter @Setter
+@Data
 @ToString
 public class Vehicle extends BaseEntity{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
     @Column(name = "vehicle_id", updatable = false, nullable = false)
-    private Long vehicleId;
+    private String vehicleId;
     @Column(name = "vehicle_name",length = 25,nullable = false)
     private String vehicleName;
     @Column(name = "vehicle_brand",length = 25,nullable = false)
     private String vehicleBrand;
     @Column(name = "vehicle_price",length = 20,nullable = false)
     private BigDecimal vehiclePrice;
-    @Column(name = "vehicle_status")
-    private VehicleStatus vehicleStatus;
-    public enum VehicleStatus {
-        BOOKED,
-        AVAILABLE
-    }
-
 }

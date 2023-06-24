@@ -65,10 +65,7 @@ public class RentService  {
         }
         return driver;
     }
-//    private Customer getCustomer(String id){
-//        Customer customer = customerRepository.findById(id).orElseThrow(()-> new ServiceException("Customer not found"));
-//        return customer;
-//    }
+
 
             //
     private Vehicle getVehicle(String vehicleId)throws Exception {

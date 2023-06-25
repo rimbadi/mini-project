@@ -30,7 +30,7 @@ public class CustomerTestCase {
         ResultActions result = mockMvc.perform(post("/customer")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(customerJson))
-                        .andExpect(status().isOk());
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -54,7 +54,7 @@ public class CustomerTestCase {
     }
 
     public Customer getCustomer() {
-        customer.setCustomerId("e356531d-bc90-4ca4-4f51eece256d");
+        customer.setCustomerId("ea1a39b7-ac33-46d1-bf1f-562bff641c6e");
         return customer;
     }
 }

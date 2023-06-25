@@ -22,8 +22,8 @@ public class DriverService {
 
     
     @Transactional
-    public Driver updateDriver(Driver driver, String driverId){
-        Driver driv = driverRepository.findById(driverId).get();
+    public Driver updateDriver(Driver driver, String driverId)throws Exception{
+        Driver driv = driverRepository.findById(driverId).orElseThrow(()->new Exception("Driver not found!"));
         if (Objects.nonNull(driver.getDriverName())&&!"".equalsIgnoreCase(driver.getDriverName())){
             driv.setDriverName(driver.getDriverName());
         }
@@ -44,7 +44,8 @@ public class DriverService {
     }
 
     
-    public void deleteDriverById(String id) {
-        driverRepository.deleteById(id);
+    public void deleteDriverById(String driverId)throws Exception {
+        driverRepository.findById(driverId).orElseThrow(()->new Exception("Driver not found!"));
+        driverRepository.deleteById(driverId);
     }
 }

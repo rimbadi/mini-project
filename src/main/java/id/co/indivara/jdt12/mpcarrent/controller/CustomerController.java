@@ -18,7 +18,7 @@ public class CustomerController {
         return customerService.saveCustomer(customer);
     }
     @PutMapping("/customer/{customerId}")
-    public Customer updateCustomer(@RequestBody Customer customer, @PathVariable String customerId){
+    public Customer updateCustomer(@RequestBody Customer customer, @PathVariable String customerId)throws Exception{
         return customerService.updateCustomer(customer,customerId);
     }
     @GetMapping("/customer")

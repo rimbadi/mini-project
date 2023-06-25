@@ -25,8 +25,8 @@ public class CustomerService {
     }
 
     @Transactional
-    public Customer updateCustomer(Customer customer, String customerId){
-        Customer cust= customerRepository.findById(customerId).get();
+    public Customer updateCustomer(Customer customer, String customerId)throws Exception{
+        Customer cust= customerRepository.findById(customerId).orElseThrow(()->new Exception("Customer not found!"));
         if (Objects.nonNull(customer.getName())&&!"".equalsIgnoreCase(customer.getName())){
             cust.setName(customer.getName());
         }

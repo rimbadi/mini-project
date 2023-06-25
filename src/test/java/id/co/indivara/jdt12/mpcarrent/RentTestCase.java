@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.time.Instant;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -28,6 +29,14 @@ public class RentTestCase {
                 " \"vehicleId\": \"bb7a3212-ef38-440b-9aa6-6fba72868cad\", " +
                 "\"startHour\": \"2023-06-23 19:30:00\"}";
         ResultActions result = mockMvc.perform(post("/rent")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(rentJson))
+                .andExpect(status().isOk());
+    }
+    @Test
+    public void testFinishRent()throws Exception{
+        String rentJson="{\"actualEndHour\": \"2023-06-25 12:30:00\"}";
+        ResultActions result = mockMvc.perform(put("/customer/{rentId}",rent.getRentId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(rentJson))
                 .andExpect(status().isOk());

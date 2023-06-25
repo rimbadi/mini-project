@@ -18,7 +18,7 @@ public class DriverController {
         return driverService.saveDriver(driver);
     }
     @PutMapping("/driver/{driverId}")
-    public Driver updateDriver(@RequestBody Driver driver,@PathVariable String driverId){
+    public Driver updateDriver(@RequestBody Driver driver,@PathVariable String driverId) throws Exception{
         return driverService.updateDriver(driver,driverId);
     }
     @GetMapping("/driver")
@@ -26,7 +26,7 @@ public class DriverController {
         return driverService.fetchAllDriver();
     }
     @DeleteMapping("/driver/{driverId}")
-    public String deleteById(@PathVariable String driverId){
+    public String deleteById(@PathVariable String driverId)throws Exception{
         driverService.deleteDriverById(driverId);
         return "Delete berhasil";
     }

@@ -21,7 +21,7 @@ public class RentController {
         return rentService.saveRent(rent);
     }
     @PutMapping("/rent/{id}")
-    public Invoice finishRent(@RequestBody CreateInvoiceDto invoice, @PathVariable String id){
+    public Invoice finishRent(@RequestBody CreateInvoiceDto invoice, @PathVariable String id) throws Exception{
         return rentService.finishRent(invoice, id);
     }
 

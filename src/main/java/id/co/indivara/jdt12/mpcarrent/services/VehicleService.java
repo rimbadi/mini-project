@@ -22,8 +22,8 @@ public class VehicleService {
     }
 
     @Transactional
-    public Vehicle updateVehicle(Vehicle vehicle, String vehicleId){
-        Vehicle vehicleDB = vehicleRepository.findById(vehicleId).get();
+    public Vehicle updateVehicle(Vehicle vehicle, String vehicleId)throws Exception{
+        Vehicle vehicleDB = vehicleRepository.findById(vehicleId).orElseThrow(()-> new Exception("Vehicle not Found"));
         if (Objects.nonNull(vehicle.getVehicleName())&&!"".equalsIgnoreCase(vehicle.getVehicleName())){
             vehicleDB.setVehicleName(vehicle.getVehicleName());
         }
@@ -42,7 +42,8 @@ public class VehicleService {
     }
 
     
-    public void deleteByIdVehicle(String id) {
-        vehicleRepository.deleteById(id);
+    public void deleteByIdVehicle(String vehicleId) throws Exception {
+        vehicleRepository.findById(vehicleId).orElseThrow(()-> new Exception("Vehicle not Found"));
+        vehicleRepository.deleteById(vehicleId);
     }
 }

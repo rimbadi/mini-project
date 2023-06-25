@@ -18,7 +18,7 @@ public class VehicleController {
         return vehicleService.saveVehicle(vehicle);
     }
     @PutMapping("/vehicle/{id}")
-    public Vehicle updateVehicle(@RequestBody Vehicle vehicle, @PathVariable String vehicleId){
+    public Vehicle updateVehicle(@RequestBody Vehicle vehicle, @PathVariable String vehicleId) throws Exception{
         return vehicleService.updateVehicle(vehicle,vehicleId);
     }
     @GetMapping("/vehicle")
@@ -26,7 +26,7 @@ public class VehicleController {
         return vehicleService.fetchAllVehicle();
     }
     @DeleteMapping("/vehicle/{id}")
-    public String deleteVehicle(@PathVariable String id){
+    public String deleteVehicle(@PathVariable String id)throws Exception{
         vehicleService.deleteByIdVehicle(id);
         return "Delete Success";
     }

@@ -78,8 +78,8 @@ public class RentService  {
     }
 
     @Transactional
-    public Invoice finishRent(CreateInvoiceDto createInvoiceDto, String id){
-       Rent rent = rentRepository.findById(id).get();
+    public Invoice finishRent(CreateInvoiceDto createInvoiceDto, String id)throws Exception{
+       Rent rent = rentRepository.findById(id).orElseThrow(()-> new Exception("rent_id not found"));
        rent.setRentStatus(Rent.RentStatus.RETURNED);
        rent.setActualEndHour(createInvoiceDto.getActualEndHour());
        rentRepository.save(rent);

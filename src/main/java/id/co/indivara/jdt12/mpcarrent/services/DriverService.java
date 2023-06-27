@@ -16,7 +16,10 @@ public class DriverService {
     private final DriverRepository driverRepository;
 
     @Transactional
-    public Driver saveDriver(Driver driver) {
+    public Driver saveDriver(Driver driver) throws Exception {
+        if (driverRepository.existsByPhoneNumber()){
+            throw new Exception("Phone number already exists");
+        }
         return driverRepository.save(driver);
     }
 

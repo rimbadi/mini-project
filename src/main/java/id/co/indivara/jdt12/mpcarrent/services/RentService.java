@@ -63,8 +63,6 @@ public class RentService  {
         return driver;
     }
 
-
-
     private Vehicle getVehicle(String vehicleId)throws Exception {
         Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(()->new Exception("Vehicle not found"));
         String isVehicleAvailble = rentRepository.findVehicleAvailbility(vehicleId);
@@ -121,7 +119,6 @@ public class RentService  {
     }
 
     public Rent findByRentId(String rentId) {
-        Rent rent= rentRepository.findById(rentId).get();
-        return rent;
+        return rentRepository.findById(rentId).get();
     }
 }

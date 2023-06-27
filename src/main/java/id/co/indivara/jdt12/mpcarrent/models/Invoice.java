@@ -41,7 +41,6 @@ public class Invoice extends BaseEntity {
     private BigDecimal vehicleCost;
     @Column(name = "driver_cost")
     private BigDecimal driverCost;
-
     @Column(name = "inital_cost")
     private BigDecimal initialCost;
     @Column(name ="total_cost")

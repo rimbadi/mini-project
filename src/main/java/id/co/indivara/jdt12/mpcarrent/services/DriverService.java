@@ -42,10 +42,12 @@ public class DriverService {
     public List<Driver> fetchAllDriver() {
         return driverRepository.findAll();
     }
-
-    
     public void deleteDriverById(String driverId)throws Exception {
         driverRepository.findById(driverId).orElseThrow(()->new Exception("Driver not found!"));
         driverRepository.deleteById(driverId);
+    }
+    public Driver findByDriverId(String driverId) {
+        Driver driver = driverRepository.findById(driverId).get();
+        return driver;
     }
 }

@@ -1,11 +1,8 @@
 package id.co.indivara.jdt12.mpcarrent.services;
 
-import id.co.indivara.jdt12.mpcarrent.error.VehicleNotFoundException;
 import id.co.indivara.jdt12.mpcarrent.models.*;
 import id.co.indivara.jdt12.mpcarrent.models.DTO.CreateInvoiceDto;
 import id.co.indivara.jdt12.mpcarrent.models.DTO.CreateRentDto;
-import id.co.indivara.jdt12.mpcarrent.models.DTO.ResponseInvoiceDto;
-import id.co.indivara.jdt12.mpcarrent.models.DTO.UpdateRentDto;
 import id.co.indivara.jdt12.mpcarrent.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.service.spi.ServiceException;
@@ -35,10 +32,10 @@ public class RentService  {
         Rent rent = new Rent();
         Customer customer = customerRepository.findById(createRentDto.getCustomerId()).orElseThrow(()-> new ServiceException("Customer not found"));
 
-        if (createRentDto.getCustomerId()!=null){
+        if (createRentDto.getCustomerId() != null){
             rent.setVehicle(getVehicle(createRentDto.getVehicleId()));
         }
-        if (createRentDto.getDriverId()!=null){
+        if (createRentDto.getDriverId() != null){
             rent.setDriver(getEmployee(createRentDto.getDriverId()));
         }
 
@@ -67,7 +64,7 @@ public class RentService  {
     }
 
 
-            //
+
     private Vehicle getVehicle(String vehicleId)throws Exception {
         Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(()->new Exception("Vehicle not found"));
         String isVehicleAvailble = rentRepository.findVehicleAvailbility(vehicleId);
@@ -87,16 +84,19 @@ public class RentService  {
         Invoice invoice = new Invoice();
         invoice.setRent(rent);
         invoice.setRentId(rent.getRentId());
+        invoice.setCustomerName(rent.getCustomer().getName());
+        invoice.setDriverName(rent.getDriver().getDriverName());
+        invoice.setVehicleCost(rent.getVehicle().getVehiclePrice());
 
         Instant startHour= rent.getStartHour();
-        Instant actualEndHour = rent.getActualEndHour();
+        Instant actualEndHour = createInvoiceDto.getActualEndHour();
 
         BigDecimal totalHours = new BigDecimal(Duration.between(startHour,actualEndHour).toHours());
 
         BigDecimal carCost = rent.getVehicle().getVehiclePrice();
 
-            BigDecimal totalCost= totalHours.multiply(carCost);
-            invoice.setInitialCost(totalCost);
+        BigDecimal totalCost= totalHours.multiply(carCost);
+        invoice.setInitialCost(totalCost);
         //jika pakai driver
         if (rent.getDriver().getDriverId()!=null) {
             invoice.setDriverCost(rent.getDriver().getDriverPrice());
@@ -105,14 +105,9 @@ public class RentService  {
             invoice.setTotalCost(withDriver.add(invoice.getInitialCost()));
         }
         invoiceRepository.save(invoice);
-        ResponseInvoiceDto responseInvoiceDto = new ResponseInvoiceDto();
-
         return invoice;
-
     }
 
-
-    
     public ArrayList<Rent> fetchAllRent() {
         return (ArrayList<Rent>) rentRepository.findAll();
     }

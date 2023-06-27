@@ -32,8 +32,6 @@ public class Rent extends BaseEntity{
     @Column(name = "vehicle_id")
     private String vehicleId;
 
-
-
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
     @JoinColumn(name = "customer_id", insertable = false,updatable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -53,11 +51,11 @@ public class Rent extends BaseEntity{
     private Vehicle vehicle;
 
     @Column(name = "start_hour",nullable = false)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+7")
     private Instant startHour;
 
     @Column(name = "actual_end_hour")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+7")
     private Instant actualEndHour;
 
     @Column(name = "rent_status",nullable = false)

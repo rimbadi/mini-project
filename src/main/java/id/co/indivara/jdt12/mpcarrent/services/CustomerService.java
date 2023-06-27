@@ -48,6 +48,8 @@ public class CustomerService {
     public void deleteByIdCustomer(String id) {
         customerRepository.deleteById(id);
     }
-
-
+    public Customer findByCustomerId(String customerId) {
+        Customer customer= customerRepository.findById(customerId).get();
+        return customer;
+    }
 }

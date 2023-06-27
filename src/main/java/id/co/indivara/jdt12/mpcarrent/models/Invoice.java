@@ -15,7 +15,6 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@ToString
 public class Invoice extends BaseEntity {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -34,6 +33,12 @@ public class Invoice extends BaseEntity {
 
     @Column(name = "rent_id")
     private String rentId;
+    @Column(name = "customer_name")
+    private String customerName;
+    @Column(name = "driver_name")
+    private String driverName;
+    @Column(name = "vehicle_cost")
+    private BigDecimal vehicleCost;
     @Column(name = "driver_cost")
     private BigDecimal driverCost;
 
@@ -42,4 +47,18 @@ public class Invoice extends BaseEntity {
     @Column(name ="total_cost")
     private BigDecimal totalCost;
 
+    @Override
+    public String toString() {
+        return "Invoice{" +
+                "invoiceId='" + invoiceId + '\'' +
+                ", rent=" + rent +
+                ", rentId='" + rentId + '\'' +
+                ", Customer name='" + customerName + '\'' +
+                ", Driver name='" + driverName + '\'' +
+                ", Vehicle cost perhour=" + vehicleCost +
+                ", Driver cost perhour=" + driverCost +
+                ", Initial cost=" + initialCost +
+                ", Total cost=" + totalCost +
+                '}';
+    }
 }

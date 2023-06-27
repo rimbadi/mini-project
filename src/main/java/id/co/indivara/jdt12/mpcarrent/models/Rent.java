@@ -51,11 +51,11 @@ public class Rent extends BaseEntity{
     private Vehicle vehicle;
 
     @Column(name = "start_hour",nullable = false)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ssXXX", timezone = "UTC")
     private Instant startHour;
 
     @Column(name = "actual_end_hour")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ssXXX", timezone = "UTC")
     private Instant actualEndHour;
 
     @Column(name = "rent_status",nullable = false)

@@ -16,7 +16,18 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     
     @Transactional
-    public Customer saveCustomer(Customer customer) {
+    public Customer saveCustomer(Customer customer) throws Exception{
+        if (customerRepository.existsByEmail(customer.getEmail())) {
+            throw new Exception("Email already used");
+        }
+        if (customerRepository.existsByPhoneNumber(customer.getPhoneNumber()) ) {
+            throw new Exception("Phone number already used.");
+        }
+        if (customerRepository.existsByKtpNumber(customer.getKtpNumber())) {
+            throw new Exception("KTP number already used.");
+        }
+
+
         return customerRepository.save(customer);
     }
 
@@ -49,7 +60,6 @@ public class CustomerService {
         customerRepository.deleteById(id);
     }
     public Customer findByCustomerId(String customerId) {
-        Customer customer= customerRepository.findById(customerId).get();
-        return customer;
+        return customerRepository.findById(customerId).get();
     }
 }

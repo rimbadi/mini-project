@@ -85,24 +85,29 @@ public class RentService  {
         invoice.setRent(rent);
         invoice.setRentId(rent.getRentId());
         invoice.setCustomerName(rent.getCustomer().getName());
-        invoice.setDriverName(rent.getDriver().getDriverName());
+
         invoice.setVehicleCost(rent.getVehicle().getVehiclePrice());
 
         Instant startHour= rent.getStartHour();
         Instant actualEndHour = createInvoiceDto.getActualEndHour();
 
         BigDecimal totalHours = new BigDecimal(Duration.between(startHour,actualEndHour).toHours());
-
         BigDecimal carCost = rent.getVehicle().getVehiclePrice();
-
         BigDecimal totalCost= totalHours.multiply(carCost);
-        invoice.setInitialCost(totalCost);
+
         //jika pakai driver
-        if (rent.getDriver().getDriverId()!=null) {
+        if (rent.getDriverId()!=null) {
+            invoice.setInitialCost(totalCost);
+            invoice.setDriverName(rent.getDriver().getDriverName());
             invoice.setDriverCost(rent.getDriver().getDriverPrice());
             BigDecimal dirverCost = rent.getDriver().getDriverPrice();
             BigDecimal withDriver = totalHours.multiply(dirverCost);
             invoice.setTotalCost(withDriver.add(invoice.getInitialCost()));
+        }else {
+            invoice.setDriverName("No Driver");
+            invoice.setDriverCost(BigDecimal.valueOf(0));
+            invoice.setInitialCost(totalCost);
+            invoice.setTotalCost(totalCost);
         }
         invoiceRepository.save(invoice);
         return invoice;

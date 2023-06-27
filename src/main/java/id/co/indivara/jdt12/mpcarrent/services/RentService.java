@@ -76,6 +76,9 @@ public class RentService  {
 
     @Transactional
     public Invoice finishRent(CreateInvoiceDto createInvoiceDto, String id)throws Exception{
+        if (invoiceRepository.existsByRentId(id)) {
+            throw new Exception("Rent with ID " + id + " already has an invoice.");
+        }
        Rent rent = rentRepository.findById(id).orElseThrow(()-> new Exception("rent_id not found"));
        rent.setRentStatus(Rent.RentStatus.RETURNED);
        rent.setActualEndHour(createInvoiceDto.getActualEndHour());

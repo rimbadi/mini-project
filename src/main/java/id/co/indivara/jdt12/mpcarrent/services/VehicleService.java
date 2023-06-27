@@ -16,7 +16,7 @@ public class VehicleService {
 
     private final VehicleRepository vehicleRepository;
     
-    public Vehicle saveVehicle(Vehicle vehicle) {
+    public Vehicle saveVehicle(Vehicle vehicle) throws Exception {
         return vehicleRepository.save(vehicle);
     }
     @Transactional
